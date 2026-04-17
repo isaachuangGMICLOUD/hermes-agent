@@ -718,6 +718,8 @@ auxiliary:
     model: "anthropic/claude-opus-4.6"
 ```
 
+For GMI auxiliary routing, use the exact model ID returned by GMI's `/v1/models` endpoint.
+
 ### Common Setups
 
 **Using a direct custom endpoint** (clearer than `provider: "main"` for local/self-hosted APIs):

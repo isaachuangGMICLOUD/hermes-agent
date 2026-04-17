@@ -224,8 +224,6 @@ _PROVIDER_MODELS: dict[str, list[str]] = {
         "trinity-large-preview",
         "trinity-mini",
     ],
-    # Keep the fallback deliberately small so the picker still prefers
-    # GMI's live /models endpoint when credentials are available.
     "gmi": [
         "zai-org/GLM-5.1-FP8",
         "deepseek-ai/DeepSeek-V3.2",
@@ -551,7 +549,6 @@ class ProviderEntry(NamedTuple):
     slug: str
     label: str
     tui_desc: str   # detailed description for `hermes model` TUI
-
 
 CANONICAL_PROVIDERS: list[ProviderEntry] = [
     ProviderEntry("nous",           "Nous Portal",              "Nous Portal (Nous Research subscription)"),
