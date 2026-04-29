@@ -270,6 +270,10 @@ _AI_GATEWAY_HEADERS = {
     "User-Agent": f"HermesAgent/{_HERMES_VERSION}",
 }
 
+_HERMES_UA_HEADERS = {
+    "User-Agent": f"HermesAgent/{_HERMES_VERSION}",
+}
+
 # Nous Portal extra_body for product attribution.
 # Callers should pass this as extra_body in chat.completions.create()
 # when the auxiliary client is backed by Nous Portal.
@@ -1097,6 +1101,8 @@ def _resolve_api_key_provider() -> Tuple[Optional[OpenAI], Optional[str]]:
                 from hermes_cli.models import copilot_default_headers
 
                 extra["default_headers"] = copilot_default_headers()
+            elif base_url_host_matches(base_url, "api.gmi-serving.com"):
+                extra["default_headers"] = dict(_HERMES_UA_HEADERS)
             _client = OpenAI(api_key=api_key, base_url=base_url, **extra)
             _client = _maybe_wrap_anthropic(_client, model, api_key, base_url)
             return _client, model
@@ -1125,6 +1131,8 @@ def _resolve_api_key_provider() -> Tuple[Optional[OpenAI], Optional[str]]:
             from hermes_cli.models import copilot_default_headers
 
             extra["default_headers"] = copilot_default_headers()
+        elif base_url_host_matches(base_url, "api.gmi-serving.com"):
+            extra["default_headers"] = dict(_HERMES_UA_HEADERS)
         _client = OpenAI(api_key=api_key, base_url=base_url, **extra)
         _client = _maybe_wrap_anthropic(_client, model, api_key, base_url)
         return _client, model
@@ -1886,6 +1894,8 @@ def _to_async_client(sync_client, model: str, is_vision: bool = False):
         )
     elif base_url_host_matches(sync_base_url, "api.kimi.com"):
         async_kwargs["default_headers"] = {"User-Agent": "claude-code/0.1.0"}
+    elif base_url_host_matches(sync_base_url, "api.gmi-serving.com"):
+        async_kwargs["default_headers"] = dict(_HERMES_UA_HEADERS)
     return AsyncOpenAI(**async_kwargs), model
 
 
@@ -2265,6 +2275,8 @@ def resolve_provider_client(
             headers.update(copilot_request_headers(
                 is_agent_turn=True, is_vision=is_vision
             ))
+        elif base_url_host_matches(base_url, "api.gmi-serving.com"):
+            headers.update(_HERMES_UA_HEADERS)
         client = OpenAI(api_key=api_key, base_url=base_url,
                         **({"default_headers": headers} if headers else {}))
 
